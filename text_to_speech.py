@@ -5,7 +5,7 @@ from gtts import gTTS
 from pygame import mixer
 import os
 
-
+font="'courier',10"
 
 #MAIN---------------------------------------
 def main():
@@ -22,11 +22,14 @@ def main():
 
     textbox=Text(boxframe, height=3, width=20, wrap=WORD)
     textbox.pack(fill="both",expand="true", side="left")
+    textbox.config(selectbackground='navy',selectforeground='white',font=font)
 
     scrollvert=Scrollbar(boxframe, command=textbox.yview)
     scrollvert.pack(side="left",fill="y")
 
     textbox.config(yscrollcommand=scrollvert.set)
+
+
 
     #LISTA DE IDIOMAS------------------------
 
@@ -34,6 +37,8 @@ def main():
 
     lang_box=Listbox(boxframe, height=5)
     lang_box.pack( side="left",fill="y")
+    lang_box.config(selectbackground='navy',selectforeground='white',exportselection=False, font=font)
+    
 
     scrollvert2=Scrollbar(boxframe, command=lang_box.yview)
     scrollvert2.pack(side="left",fill="y")
@@ -73,6 +78,28 @@ def main():
     barramenu.add_cascade(label="Archivo     ",menu=menuArchivo)
     barramenu.add_cascade(label="Ayuda     ",menu=menuAyuda)
 
+
+    def make_menu(w):
+        global the_menu
+        the_menu = Menu(w, tearoff=0)
+        the_menu.add_command(label="Cortar  ")
+        the_menu.add_command(label="Copiar  ")
+        the_menu.add_command(label="Pegar  ")
+    
+
+    def show_menu(e):
+        w = e.widget
+        the_menu.entryconfigure("Cortar  ",
+        command=lambda: w.event_generate("<<Cut>>"))
+        the_menu.entryconfigure("Copiar  ",
+        command=lambda: w.event_generate("<<Copy>>"))
+        the_menu.entryconfigure("Pegar  ",
+        command=lambda: w.event_generate("<<Paste>>"))
+        the_menu.tk.call("tk_popup", the_menu, e.x_root, e.y_root)
+
+    textbox.bind("<Button-3><ButtonRelease-3>", show_menu)
+
+    make_menu(root)
 
     codes={'Español':'es','Inglés':'en','Italiano':'it','Francés':'fr','Alemán':'de','Portugués':'pt'}
 
